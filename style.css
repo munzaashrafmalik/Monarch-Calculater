@@ -1,0 +1,67 @@
+:root {
+  --bg: #121212;
+  --calc-bg: #1c1c1c;
+  --display-bg: #000000;
+  --display-text: #ffffff;
+  --btn-num: #333333;
+  --btn-op: #ff9f0a;
+  --btn-fn: #a5a5a5;
+  --text: #ffffff;
+}
+
+body {
+  background: var(--bg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.calculator {
+  background: var(--calc-bg);
+  padding: 20px;
+  border-radius: 30px;
+  width: 300px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+#display {
+  width: 100%;
+  height: 80px;
+  background: var(--display-bg);
+  color: var(--display-text);
+  border: none;
+  margin-bottom: 20px;
+  text-align: right;
+  padding: 0 20px;
+  font-size: 3rem;
+  font-weight: 300;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.btn {
+  height: 65px;
+  border-radius: 20px;
+  border: none;
+  font-size: 1.5rem;
+  font-weight: 400;
+  cursor: pointer;
+  color: white;
+  transition: opacity 0.2s;
+}
+
+.btn:active { opacity: 0.6; }
+
+.btn.fn { background: var(--btn-fn); color: black; }
+.btn.operator { background: var(--btn-op); }
+.btn:not(.fn):not(.operator) { background: var(--btn-num); }
+.btn.zero { border-radius: 40px; grid-column: span 2; padding-left: 25px; text-align: left; }
