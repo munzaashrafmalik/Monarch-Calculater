@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Monarch — Luxury Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --obsidian: #0a0a0f; --deep: #111118; --surface: #16161e;
+  --glass: #1c1c26; --border: rgba(212,175,55,.18);
+  --gold: #d4af37; --gold-light: #f0d060; --gold-glow: rgba(212,175,55,.3);
+  --text: #f0e8d8; --muted: #8a8070; --digit: #faf3e0;
+  --btn-bg: rgba(28,28,38,.9); --btn-op: rgba(212,175,55,.12);
+  --btn-eq: linear-gradient(135deg,#c9a227,#d4af37,#e8c84a);
+  --radius: 20px; --radius-btn: 14px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: var(--obsidian); color: var(--text);
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; padding: 20px 10px; overflow-x: hidden;
+  touch-action: manipulation;
+}
+.masthead { text-align: center; padding: 20px 0; }
+.masthead-logo { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; color: var(--gold); letter-spacing: .2em; text-transform: uppercase; }
+.masthead-sub {
+  font-family: 'Cormorant Garamond', serif; /* Matching main logo font */
+  font-size: 1.2rem; /* Made it larger */
+  font-weight: 300;
+  letter-spacing: .25em; /* Increased spacing */
+  color: var(--gold-light); /* Lighter gold color */
+  text-transform: uppercase;
+  margin-top: 5px; /* Spacing from main logo */
+}
+
+.calc-shell {
+  width: 100%; max-width: 400px; background: #12121a;
+  border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: 0 20px 40px rgba(0,0,0,.6), 0 0 40px var(--gold-glow);
+  overflow: hidden;
+  animation: fadeInSlideUp 0.8s ease-out forwards; /* Apply on load */
+}
+.display {
+  padding: 20px; background: linear-gradient(180deg, #0d0d14, #111118);
+  min-height: 120px; display: flex; flex-direction: column; justify-content: flex-end;
+}
+
+@keyframes popGlow { 
+  0% { transform: scale(0.98); opacity: 0.7; text-shadow: 0 0 0 transparent; } 
+  50% { transform: scale(1.01); opacity: 1; text-shadow: 0 0 10px var(--gold-light); } 
+  100% { transform: scale(1); opacity: 1; text-shadow: 0 0 3px var(--gold-glow); } 
+}
+.display-result { 
+  font-family: 'DM Mono', monospace; font-size: 2.5rem; color: var(--digit); 
+  text-align: right; word-break: break-all;
+  animation: popGlow 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.display-expression {
+  animation: slideInFade 0.3s ease-out;
+}
+
+@keyframes slideInFade {
+  0% { opacity: 0; transform: translateY(5px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInSlideUp {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.keypad { padding: 12px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.btn {
+  height: 60px; border: none; border-radius: var(--radius-btn); cursor: pointer;
+  background: var(--btn-bg); color: var(--text); font-size: 1.1rem;
+  transition: all .2s; box-shadow: 0 2px 5px rgba(0,0,0,.3);
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+}
+.btn:active {
+  transform: scale(0.90); 
+  background: rgba(212,175,55,.2); 
+  box-shadow: 0 1px 3px rgba(0,0,0,.4); 
+}
+.btn.op { color: var(--gold-light); background: var(--btn-op); }
+.btn.eq { background: var(--btn-eq); color: #0a0a0f; font-weight: 700; grid-column: span 2; }
+.btn.clear { color: #f87171; }
+</style>
+</head>
+<body>
+    <header class="masthead">
+        <h1 class="masthead-logo">Monarch</h1>
+        <div class="masthead-sub">Calculator</div>
+    </header>
+    <div class="calc-shell">
+        <div class="display">
+            <div class="display-expression" style="color:var(--muted); font-size:0.9rem; text-align:right;"></div>
+            <div class="display-result">0</div>
+        </div>
+        <div class="keypad">
+            <button class="btn clear">AC</button>
+            <button class="btn" data-action="clear-entry">C</button>
+            <button class="btn">%</button>
+            <button class="btn op">÷</button>
+            <button class="btn">7</button>
+            <button class="btn">8</button>
+            <button class="btn">9</button>
+            <button class="btn op">×</button>
+            <button class="btn">4</button>
+            <button class="btn">5</button>
+            <button class="btn">6</button>
+            <button class="btn op">-</button>
+            <button class="btn">1</button>
+            <button class="btn">2</button>
+            <button class="btn">3</button>
+            <button class="btn op">+</button>
+            <button class="btn" style="grid-column: span 2;">0</button>
+            <button class="btn">.</button>
+            <button class="btn eq">=</button>
+        </div>
+    </div>
+    <script>
+        const resultEl = document.querySelector('.display-result');
+        const exprEl = document.querySelector('.display-expression');
+        let currentInput = '0';
+        let expression = '';
+        let shouldReset = false;
+
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (navigator.vibrate) navigator.vibrate(10);
+                const val = btn.textContent;
+                const action = btn.dataset.action; 
+                
+                if (action === 'clear-entry') { 
+                    currentInput = '0';
+                } else if (val === 'AC') { 
+                    currentInput = '0'; expression = ''; 
+                } else if (val === '=') {
+                    try {
+                        let finalResult = new Function('return ' + expression.replace(/×/g, '*').replace(/÷/g, '/') + currentInput)();
+                        currentInput = finalResult.toString();
+                        expression = ''; shouldReset = true;
+                    } catch { currentInput = 'Error'; shouldReset = true; }
+                } else if (['+', '-', '×', '÷'].includes(val)) {
+                    expression += currentInput + ` ${val} `; 
+                    currentInput = '0'; 
+                } else {
+                    if (shouldReset) { currentInput = val; shouldReset = false; }
+                    else { currentInput = (currentInput === '0' && val !== '.') ? val : currentInput + val; }
+                }
+                
+                exprEl.textContent = expression;
+                // Trigger slideInFade animation for expression
+                exprEl.style.animation = 'none';
+                void exprEl.offsetWidth; // Trigger reflow
+                exprEl.style.animation = 'slideInFade 0.3s ease-out';
+                resultEl.textContent = currentInput;
+                
+                // Trigger popGlow animation for result
+                resultEl.style.animation = 'none';
+                void resultEl.offsetWidth; 
+                resultEl.style.animation = 'popGlow 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            });
+        });
+    </script>
+</body>
+</html>
